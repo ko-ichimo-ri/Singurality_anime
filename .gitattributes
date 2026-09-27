@@ -1,0 +1,12 @@
+# テキストは改行コードを LF にそろえる
+*.md   text eol=lf
+*.py   text eol=lf
+*.yaml text eol=lf
+*.svg  text eol=lf
+
+# 資料・図として Git で管理する画像や PDF は、差分を取らないバイナリとして扱う
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.pdf  binary

@@ -1,0 +1,11 @@
+# パイロット版：字幕（日本語・英語）
+#
+# 1つの字幕につき1項目。日本語と英語を必ず並べて書く。
+# セリフは 90_ideas/README.md（おっさん編のメモ）から。
+
+- cut: PL_c007
+  at: 1.2
+  dur: 4.6
+  who: android
+  ja: こんなに技術が進んでも、足元がびしょびしょになっちゃいますね
+  en: All this technology, and our feet still get soaked.

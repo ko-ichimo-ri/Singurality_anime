@@ -1,0 +1,5 @@
+numpy
+pycairo
+pillow
+pyyaml
+imageio-ffmpeg

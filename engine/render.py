@@ -10,7 +10,7 @@
     .venv/Scripts/python -m engine.render pilot --still PL_c004:2.5   1枚だけ静止画
     .venv/Scripts/python -m engine.render pilot --scale 0.5     半分の大きさで速く確認
 
-<作品フォルダ> には cuts/ と subtitles.yaml を置く。texts.yaml（画面内の文字）、sound/bgm.py（音）、
+<作品フォルダ> には cuts/ と subtitles.yaml を置く（引き継ぐ場合は cuts/ も省略できる）。texts.yaml（画面内の文字）、sound/bgm.py（音）、
 voices.yaml（声）はあれば使う。project.yaml に `inherit: pilot` と書くと、自分のフォルダにない
 ファイルは pilot のものを使う。project.yaml の style / voice は、コマンドで指定しなかったときの既定値。
 書き出し先は <作品フォルダ>/renders/。
@@ -115,7 +115,8 @@ class Project:
         self.cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) if cfg_path.exists() else {}
         self.cfg = self.cfg or {}
         self.base = (ROOT / self.cfg["inherit"]).resolve() if self.cfg.get("inherit") else None
-        cut_dirs = sorted(p for p in (self.dir / "cuts").iterdir()
+        cuts_dir = self.dir / "cuts" if (self.dir / "cuts").exists() else self.base / "cuts"
+        cut_dirs = sorted(p for p in cuts_dir.iterdir()
                           if p.is_dir() and not p.name.startswith("_") and (p / "cut.py").exists())
         self.cuts = [Cut(p) for p in cut_dirs]
         t = 0.0
@@ -170,7 +171,16 @@ def draw_subtitles(ctx, project, cut, t, lang, style):
         img.paint(ctx, W / 2, H - 64, alpha=a, anchor="bottom")
 
 
-def render_frame(surface, scale, project, cut, i, lang, finish, style):
+def draw_credits(ctx, project, t_global, credits):
+    """声付きの版の最後に、声のクレジットを小さく出す（利用規約で求められているもの）。"""
+    a = clamp((t_global - (project.duration - 4.5)) / 0.8)
+    if a <= 0 or not credits:
+        return
+    img = text.render(chr(10).join(credits), 22, color=(225, 222, 215), shadow=4, line_gap=0.2)
+    img.paint(ctx, W - 40 - img.w / 2, H - 30, alpha=a * 0.85, anchor="bottom")
+
+
+def render_frame(surface, scale, project, cut, i, lang, finish, style, credits=None):
     t = i / FPS
     ctx = cairo.Context(surface)
     ctx.set_source_rgb(0, 0, 0)
@@ -190,6 +200,7 @@ def render_frame(surface, scale, project, cut, i, lang, finish, style):
         cut.module.overlay(ctx, t, env)
         ctx.restore()
     draw_subtitles(ctx, project, cut, t, lang, style)
+    draw_credits(ctx, project, cut.start + t, credits)
     surface.flush()
     finish.apply(surface, frame)
 
@@ -310,7 +321,7 @@ def output_dir(project, variant, lang):
     return project.out / variant / lang if variant else project.out / lang
 
 
-def render_video(project, lang, scale, audio_path, style, variant, crf):
+def render_video(project, lang, scale, audio_path, style, variant, crf, credits=None):
     out_dir = output_dir(project, variant, lang)
     out_dir.mkdir(parents=True, exist_ok=True)
     name = "_".join(p for p in (project.dir.name, variant, lang) if p)
@@ -321,7 +332,7 @@ def render_video(project, lang, scale, audio_path, style, variant, crf):
     t0 = time.time()
     for cut in project.cuts:
         for i in range(cut.frames):
-            render_frame(surface, scale, project, cut, i, lang, finish, style)
+            render_frame(surface, scale, project, cut, i, lang, finish, style, credits)
             proc.stdin.write(frame_bytes(surface))
         print(f"  {variant or 'base'} {lang} {cut.id} 完了（{time.time() - t0:.0f}秒経過）", flush=True)
     proc.stdin.close()
@@ -389,7 +400,7 @@ def main(argv=None):
     project = Project(args.project)
     style = Style(args.style if args.style is not None else project.cfg.get("style"))
     voiced = args.voice if args.voice is not None else bool(project.cfg.get("voice"))
-    variant = project.cfg.get("variant") or variant_name(style, voiced)
+    variant = project.cfg["variant"] if "variant" in project.cfg else variant_name(style, voiced)
     langs = LANGS if args.lang == "all" else (args.lang,)
     project.out.mkdir(parents=True, exist_ok=True)
     print(f"{project.dir.name}: {len(project.cuts)}カット、{project.duration:.1f}秒、"
@@ -414,7 +425,12 @@ def main(argv=None):
         audio_path = None if args.no_audio else build_audio(project, variant, lang, voiced)
         if audio_path:
             print("  音:", audio_path, flush=True)
-        print("  映像:", render_video(project, lang, args.scale, audio_path, style, variant, args.crf), flush=True)
+        credits = None
+        if voiced:
+            from . import voice
+            credits = voice.credits(project.voices, lang)
+        print("  映像:", render_video(project, lang, args.scale, audio_path, style, variant, args.crf, credits),
+              flush=True)
 
 
 if __name__ == "__main__":

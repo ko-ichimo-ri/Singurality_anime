@@ -1,0 +1,4 @@
+# パイロット版を作風 silhouette で書き出す
+inherit: pilot
+style: silhouette
+variant: ""

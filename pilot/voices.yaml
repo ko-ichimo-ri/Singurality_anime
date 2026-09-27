@@ -1,0 +1,17 @@
+# パイロット版：声の設定（--voice を付けて書き出したときに使う）
+#
+# 話す人 → 言語 → 使う音声合成と設定。credit は声付きの版の最後に表示する。
+# 声を選んだ理由と聞き比べ用のサンプルは experiments/05_voice/README.md を参照。
+
+android:
+  ja:
+    engine: voicevox
+    speaker: 14            # 冥鳴ひまり（ノーマル）：落ち着いた、やわらかい大人の声
+    speed: 0.98
+    intonation: 1.1
+    credit: "VOICEVOX:冥鳴ひまり"
+  en:
+    engine: piper
+    model: en_US-kristin-medium   # LibriVox の朗読から学習した声（パブリックドメイン）
+    length_scale: 1.12
+    credit: "English voice: Piper / kristin (public domain)"

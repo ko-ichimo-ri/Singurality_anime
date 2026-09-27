@@ -1,0 +1,4 @@
+# パイロット版を作風 watercolor で書き出す
+inherit: pilot
+style: watercolor
+variant: ""

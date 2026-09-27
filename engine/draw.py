@@ -137,11 +137,11 @@ def poly(ctx, pts, close=True):
 
 # ---------------------------------------------------------------- グラデーション
 
-def linear(x0, y0, x1, y1, stops):
-    """stops = [(位置, 色, 不透明度), ...]"""
+def linear(x0, y0, x1, y1, stops, tint=None):
+    """stops = [(位置, 色, 不透明度), ...]。tint を渡すと、色を shade で寄せる。"""
     g = cairo.LinearGradient(x0, y0, x1, y1)
     for off, color, a in stops:
-        r, gg, b = rgb(color)
+        r, gg, b = shade(color, tint)
         g.add_color_stop_rgba(off, r, gg, b, a)
     return g
 

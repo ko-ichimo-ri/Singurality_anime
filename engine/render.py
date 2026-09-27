@@ -184,6 +184,11 @@ def render_frame(surface, scale, project, cut, i, lang, finish, style):
     style.post(surface, frame)
     ctx = cairo.Context(surface)
     ctx.scale(scale, scale)
+    if hasattr(cut.module, "overlay"):
+        # 作風のフィルターをかけずに重ねるもの（タイトルなど）
+        ctx.save()
+        cut.module.overlay(ctx, t, env)
+        ctx.restore()
     draw_subtitles(ctx, project, cut, t, lang, style)
     surface.flush()
     finish.apply(surface, frame)

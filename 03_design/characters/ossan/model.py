@@ -53,7 +53,7 @@ def _coat_side(ctx, hem_sway, tint):
     ctx.close_path()
     src(ctx, C["coat"], 1, tint)
     ctx.fill_preserve()
-    ctx.set_source(linear(-0.095, 0, 0.09, 0, [(0, C["coat_dk"], 0.85), (0.45, C["coat_dk"], 0.0), (1, C["coat_dk"], 0)]))
+    ctx.set_source(linear(-0.095, 0, 0.09, 0, [(0, C["coat_dk"], 0.85), (0.45, C["coat_dk"], 0.0), (1, C["coat_dk"], 0)], tint=tint))
     ctx.fill()
     # 前の合わせと、ポケット
     ctx.set_line_width(0.0045)
@@ -229,7 +229,7 @@ def back(ctx, x, y, s, walk=None, walk_amt=1.0, hold=None, lean=0.0, head_tilt=0
         src(ctx, C["coat"], 1, tint)
         ctx.fill_preserve()
         ctx.set_source(linear(-0.13, 0, 0.13, 0, [(0, C["coat_dk"], 0.7), (0.3, C["coat_dk"], 0.0),
-                                                   (0.75, C["coat_dk"], 0.0), (1, C["coat_dk"], 0.55)]))
+                                                   (0.75, C["coat_dk"], 0.0), (1, C["coat_dk"], 0.55)], tint=tint))
         ctx.fill()
         src(ctx, C["coat_dk"], 1, tint)
         ctx.set_line_width(0.004)

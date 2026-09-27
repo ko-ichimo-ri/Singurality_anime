@@ -51,7 +51,10 @@ def draw(ctx, t, env):
         RAIN_FAR.draw(ctx, t)
         RAIN_MID.draw(ctx, t, light=l2)
 
-    # タイトル
+
+
+def overlay(ctx, t, env):
+    """タイトル。作風のフィルターをかけずに、くっきり重ねる。"""
     ta = smooth(seg(t, 3.6, 5.0)) * (1 - smooth(seg(t, 6.6, 7.3)))
     if ta > 0:
         title = text.render(env.text("title"), 76 if env.lang == "ja" else 70, color=(240, 236, 226),

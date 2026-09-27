@@ -163,24 +163,24 @@ def scatter_lights(seed, n, area, radius, colors, alpha):
 
 
 def reflection(ctx, x, y, w, length, color, a, wobble=0.0, t=0.0):
-    """濡れた地面に映る光の縦の帯。"""
+    """濡れた地面に映る光の縦の帯。横は中央が明るく、縦は下へいくほど薄くなる。"""
+    off = wobble * math.sin(t * 2.3 + x * 0.01)
+    ww = w * 1.25
+    r, gg, b = rgb(color)
     ctx.save()
     ctx.set_operator(cairo.OPERATOR_ADD)
-    steps = 6
-    for i in range(steps):
-        yy = y + length * i / steps
-        hh = length / steps + 1
-        ww = w * (1 + 0.35 * i / steps)
-        off = wobble * math.sin(t * 2.3 + i * 1.7 + x * 0.01)
-        aa = a * (1 - i / steps) ** 1.6
-        g = cairo.LinearGradient(x - ww / 2 + off, 0, x + ww / 2 + off, 0)
-        r, gg, b = rgb(color)
-        g.add_color_stop_rgba(0, r, gg, b, 0)
-        g.add_color_stop_rgba(0.5, r, gg, b, aa)
-        g.add_color_stop_rgba(1, r, gg, b, 0)
-        ctx.set_source(g)
-        ctx.rectangle(x - ww / 2 + off, yy, ww, hh)
-        ctx.fill()
+    g = cairo.LinearGradient(x - ww / 2 + off, 0, x + ww / 2 + off, 0)
+    g.add_color_stop_rgba(0, r, gg, b, 0)
+    g.add_color_stop_rgba(0.5, r, gg, b, a)
+    g.add_color_stop_rgba(1, r, gg, b, 0)
+    m = cairo.LinearGradient(0, y, 0, y + length)
+    m.add_color_stop_rgba(0, 0, 0, 0, 1)
+    m.add_color_stop_rgba(0.25, 0, 0, 0, 0.6)
+    m.add_color_stop_rgba(1, 0, 0, 0, 0)
+    ctx.rectangle(x - ww / 2 + off, y, ww, length)
+    ctx.clip()
+    ctx.set_source(g)
+    ctx.mask(m)
     ctx.restore()
 
 

@@ -7,7 +7,8 @@ characters: []
 pov:           # 視点人物（群像劇のため）
 origin: []     # 派生元のシーンや交差（例：[OS_s050, X020]）
 crossing: []   # 関わる交差ID（例：[X010]）
-pages:         # ページ数の目安
+duration:      # 尺の目安（秒）
+cuts:          # カットの範囲（例：AF_c010-AF_c025）
 status: アイデア  # アイデア / 検討中 / 確定
 ---
 

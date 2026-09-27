@@ -5,7 +5,8 @@ datetime:      # 作中日時（02_crossroads/master_timeline.md と合わせる
 place:
 characters: []
 crossing: []   # 関わる交差ID（例：[X010]）
-pages:         # ページ数の目安
+duration:      # 尺の目安（秒）
+cuts:          # カットの範囲（例：RB_c010-RB_c025）
 status: アイデア  # アイデア / 検討中 / 確定
 ---
 

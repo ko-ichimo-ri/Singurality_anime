@@ -244,84 +244,155 @@ def gates(ctx, t, floor_y, scroll=0.0):
 
 # ---------------------------------------------------------------- 奥へ続く通り
 
-def street(ctx, t, vp=(960, 520), ground_y=520, depth=0.0, lamps=True, blur=0.0):
-    """後ろから見た、奥へまっすぐ続く通り。depth を増やすと奥へ進んだように見える。
+class Street:
+    """後ろから見た、奥へまっすぐ続く通り。実際の寸法（メートル）で街を置き、画面に投影する。
 
-    返り値：雨を明るく描くための光の模様（なければ None）
+    カメラは道の中央、高さ cam_h メートル。vx, vy は消失点（地平線の高さ）。
+    travel を増やすと、カメラが奥へ進む。
     """
-    vx, vy = vp
-    sky(ctx, 0, ground_y + 40)
-    skyline(ctx, t, ground_y + 30, 21, C["far"], 60, 220, win=0.25, x0=vx - 700, x1=vx + 700,
-            wmin=40, wmax=110, win_size=(4, 6), lit=0.3)
-    # 左右の建物（遠近法の壁）
-    for side in (-1, 1):
-        ctx.move_to(vx + side * 90, vy - 150)
-        ctx.line_to(vx + side * 1400, -600)
-        ctx.line_to(vx + side * 1400, H + 400)
-        ctx.line_to(vx + side * 90, vy + 18)
+
+    ROAD = 5.5       # 道の中央から建物の壁まで（メートル）
+    LAMP_X = 4.6
+    NEAR = 0.6
+
+    def __init__(self, seed=5, vx=960, vy=480, f=900, cam_h=1.6, length=160):
+        self.vx, self.vy, self.f, self.cam_h = vx, vy, f, cam_h
+        rng = np.random.default_rng(seed)
+        self.buildings = []
+        for side in (-1, 1):
+            d = -10.0
+            while d < length:
+                ln = rng.uniform(6, 15)
+                self.buildings.append({
+                    "side": side, "d0": d, "d1": d + ln - rng.uniform(0, 0.6),
+                    "h": rng.uniform(7, 22),
+                    "col": [C["mid"], C["near"], "#171d33", "#1e2540"][rng.integers(4)],
+                    "shop": [C["win_warm"], C["win_cool"], "#ffe2b0", C["win_warm"], None][rng.integers(5)],
+                    "sign": [None, C["red"], C["teal"], "#c89cff", C["win_warm"], None][rng.integers(6)],
+                    "seed": int(rng.integers(1 << 30)),
+                })
+                d += ln
+        self.length = length
+
+    def proj(self, x, y, d):
+        d = max(d, self.NEAR)
+        return self.vx + self.f * x / d, self.vy + self.f * (self.cam_h - y) / d
+
+    def scale_at(self, d):
+        """奥行き d の位置で、1メートルが何ピクセルか。"""
+        return self.f / max(d, self.NEAR)
+
+    def _quad(self, ctx, pts):
+        ctx.move_to(*pts[0])
+        for p in pts[1:]:
+            ctx.line_to(*p)
         ctx.close_path()
-        ctx.set_source(linear(vx, 0, vx + side * 1100, 0, [(0, C["mid"], 1), (1, "#0b0f1d", 1)]))
+
+    def _facade(self, ctx, side, d0, d1, y0, y1, x=None):
+        x = side * self.ROAD if x is None else x
+        return [self.proj(x, y0, d0), self.proj(x, y1, d0), self.proj(x, y1, d1), self.proj(x, y0, d1)]
+
+    def draw(self, ctx, t, travel=0.0):
+        """返り値：雨を明るく描くための光の模様。"""
+        sky(ctx, 0, self.vy + 60)
+        skyline(ctx, t, self.vy + 8, 21, C["far"], 30, 140, win=0.25, x0=self.vx - 520, x1=self.vx + 520,
+                wmin=30, wmax=90, win_size=(3, 4), lit=0.3, beacons=False)
+        # 道と歩道
+        far = self.length
+        road = [self.proj(-self.ROAD, 0, self.NEAR), self.proj(self.ROAD, 0, self.NEAR),
+                self.proj(self.ROAD, 0, far), self.proj(-self.ROAD, 0, far)]
+        self._quad(ctx, road)
+        ctx.set_source(linear(0, self.vy, 0, H, [(0, C["ground_lt"], 1), (0.25, C["ground"], 1), (1, "#05070d", 1)]))
         ctx.fill()
-        # 窓と店の明かり：奥から手前へ流れる
-        for k in range(22):
-            u = ((k * 0.13 + depth * 0.08) % 1.0)
-            z = 0.06 + u ** 2.2 * 1.2
-            px = vx + side * (90 + (1400 - 90) * z)
-            top = vy - 150 + (-600 - (vy - 150)) * z
-            bot = vy + 18 + (H + 400 - (vy + 18)) * z
-            hgt = bot - top
-            wcol = C["win_warm"] if (k * 7) % 3 else C["win_cool"]
-            a = 0.55 * min(1, z * 3) * (1 - blur * 0.3)
-            ww = 20 + 160 * z
-            # 店の明かり（1階）
-            src(ctx, wcol, a * 0.8)
-            ctx.rectangle(px - side * ww * 0.3 - ww / 2, bot - hgt * 0.25, ww, hgt * 0.12)
+        for side in (-1, 1):
+            src(ctx, "#8f9ab5", 0.10)
+            curb = [self.proj(side * 3.6, 0, self.NEAR), self.proj(side * 3.7, 0, self.NEAR),
+                    self.proj(side * 3.7, 0, far), self.proj(side * 3.6, 0, far)]
+            self._quad(ctx, curb)
             ctx.fill()
-            # 上の階の窓
-            if (k * 5) % 4:
-                src(ctx, wcol, a * 0.45)
-                ctx.rectangle(px - ww / 2, top + hgt * 0.35, ww * 0.6, hgt * 0.05)
-                ctx.fill()
-            # 看板
-            if k % 4 == 1:
-                col = [C["red"], C["teal"], C["win_warm"], "#c89cff"][(k // 4) % 4]
-                glow(ctx, px, top + hgt * 0.55, 40 + 90 * z, col, 0.35 * min(1, z * 3))
-    # 道路
-    ctx.move_to(vx - 90, vy + 18)
-    ctx.line_to(vx + 90, vy + 18)
-    ctx.line_to(vx + 1400, H + 400)
-    ctx.line_to(vx - 1400, H + 400)
-    ctx.close_path()
-    ctx.set_source(linear(0, vy, 0, H, [(0, C["ground_lt"], 1), (0.3, C["ground"], 1), (1, "#05070d", 1)]))
-    ctx.fill()
-    # 白線（手前へ流れる）
-    src(ctx, "#cdd3e0", 0.18)
-    for k in range(12):
-        u = ((k / 12 + depth * 0.1) % 1.0)
-        z0, z1 = u ** 2.4, (u + 0.035) ** 2.4
-        y0 = vy + 18 + (H + 400 - vy) * z0
-        y1 = vy + 18 + (H + 400 - vy) * z1
-        w0, w1 = 2 + 20 * z0, 2 + 20 * z1
-        ctx.move_to(vx - w0, y0)
-        ctx.line_to(vx + w0, y0)
-        ctx.line_to(vx + w1, y1)
-        ctx.line_to(vx - w1, y1)
-        ctx.close_path()
-        ctx.fill()
-    light = None
-    if lamps:
-        for k in range(6):
-            u = ((k / 6 + depth * 0.05) % 1.0)
-            z = 0.05 + u ** 2 * 1.1
+        # 中央の白線（カメラが進むと手前へ流れる）
+        src(ctx, "#cdd3e0", 0.16)
+        off = travel % 6.0
+        for k in range(30):
+            d0 = k * 6.0 - off + 1.0
+            if d0 + 3 < self.NEAR:
+                continue
+            q = [self.proj(-0.07, 0, max(d0, self.NEAR)), self.proj(0.07, 0, max(d0, self.NEAR)),
+                 self.proj(0.07, 0, d0 + 3), self.proj(-0.07, 0, d0 + 3)]
+            self._quad(ctx, q)
+            ctx.fill()
+        # 建物（奥から手前へ）
+        items = []
+        for b in self.buildings:
+            d0, d1 = b["d0"] - travel, b["d1"] - travel
+            if d1 < self.NEAR or d0 > far:
+                continue
+            items.append((d0, b))
+        for d0, b in sorted(items, key=lambda it: -it[0]):
+            self._building(ctx, t, b, travel)
+        # 街灯
+        lights = []
+        off = travel % 18.0
+        for k in range(10):
+            d = k * 18.0 - off + 4.0
+            if d < 1.2:
+                continue
             for side in (-1, 1):
-                px = vx + side * (130 + 900 * z)
-                py = vy + 18 + (H + 400 - vy) * z * 0.62
-                hh = 40 + 900 * z
+                bx, by = self.proj(side * self.LAMP_X, 0, d)
+                tx, ty = self.proj(side * self.LAMP_X, 6.2, d)
+                hx, hy = self.proj(side * (self.LAMP_X - 1.0), 6.0, d)
+                sc = self.scale_at(d)
                 src(ctx, "#080a12")
-                ctx.rectangle(px - 1 - 4 * z, py - hh, 2 + 8 * z, hh)
+                ctx.set_line_width(max(0.16 * sc, 1))
+                ctx.move_to(bx, by)
+                ctx.line_to(tx, ty)
+                ctx.line_to(hx, hy)
+                ctx.stroke()
+                glow(ctx, hx, hy + 0.1 * sc, min(1.6 * sc, 420), C["lamp"], 0.45)
+                reflection(ctx, hx, by, 0.9 * sc, min(3.5 * sc, 700), C["lamp"], 0.10, wobble=0.1 * sc, t=t)
+                lights.append((hx, hy, sc))
+        return radial(self.vx, self.vy + 120, 900, [(0, "#ffe7b8", 0.5), (1, "#ffe7b8", 0.0)])
+
+    def _building(self, ctx, t, b, travel):
+        side = b["side"]
+        d0, d1 = max(b["d0"] - travel, self.NEAR), b["d1"] - travel
+        # 壁
+        self._quad(ctx, self._facade(ctx, side, d0, d1, 0, b["h"]))
+        src(ctx, b["col"])
+        ctx.fill()
+        # 手前の側面（道に面した角）
+        rng = np.random.default_rng(b["seed"])
+        # 1階の店
+        if b["shop"]:
+            self._quad(ctx, self._facade(ctx, side, d0 + 0.6, d1 - 0.6, 0.2, 3.0, x=side * (self.ROAD - 0.02)))
+            # 手前の店ほど暗くする（近すぎる明かりで画面がうるさくならないように）
+            near = min(1.0, max(0.0, (d0 - 2.0) / 10.0))
+            src(ctx, b["shop"], 0.12 + 0.33 * near)
+            ctx.fill()
+            self._quad(ctx, self._facade(ctx, side, d0 + 0.6, d1 - 0.6, 2.7, 3.0, x=side * (self.ROAD - 0.03)))
+            src(ctx, "#0b0e18", 0.8)
+            ctx.fill()
+        # 上の階の窓
+        floors = int((b["h"] - 4) // 3)
+        cols = int((d1 - d0) // 2.4)
+        for fl in range(floors):
+            y0 = 4.2 + fl * 3
+            for c in range(cols):
+                if rng.random() > 0.4:
+                    continue
+                wd0 = d0 + 0.6 + c * 2.4
+                col = C["win_warm"] if rng.random() < 0.6 else C["win_cool"]
+                self._quad(ctx, self._facade(ctx, side, wd0, wd0 + 1.2, y0, y0 + 1.5, x=side * (self.ROAD - 0.02)))
+                src(ctx, col, rng.uniform(0.25, 0.6))
                 ctx.fill()
-                glow(ctx, px - side * 20 * z, py - hh, 30 + 160 * z, C["lamp"], 0.4)
-                reflection(ctx, px - side * 20 * z, vy + 30 + (H - vy) * z * 0.9, 10 + 60 * z,
-                           120 + 400 * z, C["lamp"], 0.12, wobble=8 * z, t=t)
-        light = radial(vx, vy + 100, 900, [(0, "#ffe7b8", 0.5), (1, "#ffe7b8", 0.0)])
-    return light
+        # 看板
+        if b["sign"]:
+            sx, sy = self.proj(side * (self.ROAD - 0.5), 4.2, d0 + 1.2)
+            sc = self.scale_at(d0 + 1.2)
+            self._quad(ctx, [self.proj(side * (self.ROAD - 0.05), 3.4, d0 + 1.0),
+                             self.proj(side * (self.ROAD - 0.05), 5.4, d0 + 1.0),
+                             self.proj(side * (self.ROAD - 0.9), 5.4, d0 + 1.0),
+                             self.proj(side * (self.ROAD - 0.9), 3.4, d0 + 1.0)])
+            src(ctx, b["sign"], 0.75)
+            ctx.fill()
+            glow(ctx, sx, sy, min(2.2 * sc, 500), b["sign"], 0.22)

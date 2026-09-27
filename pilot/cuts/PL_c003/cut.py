@@ -42,9 +42,9 @@ def draw(ctx, t, env):
         blink = 1.0 if 1.85 < t < 1.97 else 0.0
         wave = smooth(seg(t, 2.6, 3.1)) * (1 - smooth(seg(t, 4.3, 4.9)))
         tint = ("#2b2f52", 0.20)
-        pts = android.front(ctx, ax, ay, s, hold=(ax - 0.14 * s, ay - 0.66 * s), wave=wave, blink=blink,
+        pts = android.front(ctx, ax, ay, s, hold=(ax - 0.085 * s, ay - 0.70 * s), wave=wave, blink=blink,
                             smile=smile, look=look, head_tilt=tilt, tint=tint, t=t)
-        u = umbrella.draw(ctx, *pts["hand_r"], 0.50 * s, angle=0.13, tint=("#2b2f52", 0.12), t=t, under=0.35)
+        u = umbrella.draw(ctx, *pts["hand_r"], 0.50 * s, angle=0.0, tint=("#2b2f52", 0.12), t=t, under=0.35)
         DRIPS.draw(ctx, t, u["rim"][1:-1:2] + [u["rim"][0], u["rim"][-1]], size=5)
     RAIN_FRONT.draw(ctx, t)
     # 顔にあたる駅の明かり

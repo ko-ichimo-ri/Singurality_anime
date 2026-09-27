@@ -35,15 +35,21 @@
 *.tif
 *.tiff
 
-# カットの作画素材（レイアウト・原画・動画・仕上げ・背景・撮影）は画像も含めて管理外
-# cut.md とフォルダ構成（.gitkeep）だけ管理する
-**/production/cuts/*/*/*
-!**/production/cuts/*/*/.gitkeep
-
 # 書き出し・完成映像
 renders/
 **/production/master/*
 !**/production/master/README.md
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# フォント（ライセンス上は同梱できるものでも、容量を抑えるため取得スクリプトで入れる）
+*.ttf
+*.otf
+*.ttc
 
 # キャッシュ・自動保存
 cache/

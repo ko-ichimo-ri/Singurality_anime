@@ -1,6 +1,7 @@
 ---
 name:          # 名前
 reading:       # 読み
+name_en:       # 英語版での表記
 home_part:     # 主役・主に登場する編（OS / RB / SJ / AF）
 appears_in: [] # 登場する編（例：[OS, SJ, AF]）
 ---

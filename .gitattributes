@@ -1,32 +1,9 @@
 # テキストは改行コードを LF にそろえる
 *.md text eol=lf
 
-# 画像・作業ファイル・音声・映像は Git LFS で管理する
-# 画像
-*.png  filter=lfs diff=lfs merge=lfs -text
-*.jpg  filter=lfs diff=lfs merge=lfs -text
-*.jpeg filter=lfs diff=lfs merge=lfs -text
-*.tif  filter=lfs diff=lfs merge=lfs -text
-*.tiff filter=lfs diff=lfs merge=lfs -text
-*.webp filter=lfs diff=lfs merge=lfs -text
-*.exr  filter=lfs diff=lfs merge=lfs -text
-*.pdf  filter=lfs diff=lfs merge=lfs -text
-# 作業ファイル（ペイント・アニメ・撮影・編集・3D）
-*.psd    filter=lfs diff=lfs merge=lfs -text
-*.clip   filter=lfs diff=lfs merge=lfs -text
-*.kra    filter=lfs diff=lfs merge=lfs -text
-*.tvpp   filter=lfs diff=lfs merge=lfs -text
-*.aep    filter=lfs diff=lfs merge=lfs -text
-*.prproj filter=lfs diff=lfs merge=lfs -text
-*.drp    filter=lfs diff=lfs merge=lfs -text
-*.blend  filter=lfs diff=lfs merge=lfs -text
-# 音声
-*.wav  filter=lfs diff=lfs merge=lfs -text
-*.mp3  filter=lfs diff=lfs merge=lfs -text
-*.flac filter=lfs diff=lfs merge=lfs -text
-*.aif  filter=lfs diff=lfs merge=lfs -text
-*.aiff filter=lfs diff=lfs merge=lfs -text
-*.ogg  filter=lfs diff=lfs merge=lfs -text
-# 映像（Vコンテなど、小さいものだけコミットする）
-*.mp4  filter=lfs diff=lfs merge=lfs -text
-*.mov  filter=lfs diff=lfs merge=lfs -text
+# 資料・図として Git で管理する画像や PDF は、差分を取らないバイナリとして扱う
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.pdf  binary

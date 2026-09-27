@@ -1,8 +1,47 @@
-# 書き出し（撮影・編集の出力、連番画像など）は Git 管理外
-# 書き出しはすべて renders/ という名前のフォルダに出す
-renders/
+# ============================================================
+# バイナリは原則 Git 管理外。資料・図（png / jpg / svg / pdf）だけ管理する
+# 管理外のファイルは外部ストレージで保管する（README.md 参照）
+# ============================================================
 
-# 完成映像は外部ストレージに置き、master/README.md に記録だけ残す
+# 動画（Vコンテ、書き出し、完成映像など）
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.m4v
+
+# 音声
+*.wav
+*.mp3
+*.flac
+*.aif
+*.aiff
+*.ogg
+*.m4a
+
+# 制作ソフトの作業ファイル（ペイント・アニメ・撮影・編集・3D）
+*.psd
+*.clip
+*.kra
+*.sai2
+*.tvpp
+*.aep
+*.prproj
+*.drp
+*.blend
+*.blend1
+*.exr
+*.tif
+*.tiff
+
+# カットの作画素材（レイアウト・原画・動画・仕上げ・背景・撮影）は画像も含めて管理外
+# cut.md とフォルダ構成（.gitkeep）だけ管理する
+**/production/cuts/*/*/*
+!**/production/cuts/*/*/.gitkeep
+
+# 書き出し・完成映像
+renders/
 **/production/master/*
 !**/production/master/README.md
 

@@ -223,21 +223,22 @@ def gates(ctx, t, floor_y, scroll=0.0):
     vgrad(ctx, 0, floor_y, W, H - floor_y, [(0, "#a7a49c", 1), (1, "#6f6d69", 1)])
     # 改札機の列
     for i in range(6):
-        x = 120 + i * 230 - scroll
+        x = 60 + i * 300 - scroll
+        gh = 400
         src(ctx, "#3a3f4d")
-        rrect(ctx, x, floor_y - 170, 70, 170, 8)
+        rrect(ctx, x, floor_y - gh, 110, gh, 12)
         ctx.fill()
         src(ctx, "#596070")
-        rrect(ctx, x + 8, floor_y - 170, 54, 22, 5)
+        rrect(ctx, x + 10, floor_y - gh, 90, 40, 8)
         ctx.fill()
         on = C["teal"] if (i + int(t * 1.2)) % 5 else "#ff7a6a"
-        glow(ctx, x + 35, floor_y - 150, 26, on, 0.5, core=0.2)
-        src(ctx, "#8a8f9c", 0.5)
-        ctx.rectangle(x + 70, floor_y - 110, 90, 8)
+        glow(ctx, x + 55, floor_y - gh + 20, 40, on, 0.5, core=0.2)
+        src(ctx, "#8a8f9c", 0.55)
+        rrect(ctx, x + 110, floor_y - gh * 0.62, 150, 14, 7)
         ctx.fill()
         # 床に映る改札
         ctx.set_source(linear(0, floor_y, 0, floor_y + 120, [(0, "#3a3f4d", 0.35), (1, "#3a3f4d", 0)]))
-        ctx.rectangle(x, floor_y, 70, 120)
+        ctx.rectangle(x, floor_y, 110, 120)
         ctx.fill()
 
 

@@ -107,6 +107,17 @@ def limb_end(x, y, angle, length):
     return x + length * math.sin(angle), y + length * math.cos(angle)
 
 
+def ik(sx, sy, tx, ty, l1, l2, bend=1):
+    """肩 (sx,sy) から手を (tx,ty) に届かせるときの肘の位置。bend で曲がる向きを選ぶ。
+    届かないときは、腕を伸ばしきった位置で止める。"""
+    d = clamp(math.hypot(tx - sx, ty - sy), abs(l1 - l2) + 1e-6, l1 + l2 - 1e-6)
+    a = math.atan2(ty - sy, tx - sx)
+    b = math.acos(clamp((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d), -1, 1)) * bend
+    elbow = (sx + l1 * math.cos(a + b), sy + l1 * math.sin(a + b))
+    hand = (sx + d * math.cos(a), sy + d * math.sin(a))
+    return elbow, hand
+
+
 def ellipse(ctx, x, y, rx, ry):
     ctx.save()
     ctx.translate(x, y)

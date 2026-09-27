@@ -1,0 +1,5 @@
+# Blender 版（トゥーン調）：experiments/blender/build.py --variant toon で書き出したフレームに、字幕と音を重ねる
+inherit: pilot
+variant: ""
+frames: renders/frames
+fade_in: 1.6

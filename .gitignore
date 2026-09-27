@@ -1,0 +1,18 @@
+# 書き出し（撮影・編集の出力、連番画像など）は Git 管理外
+# 書き出しはすべて renders/ という名前のフォルダに出す
+renders/
+
+# 完成映像は外部ストレージに置き、master/README.md に記録だけ残す
+**/production/master/*
+!**/production/master/README.md
+
+# キャッシュ・自動保存
+cache/
+*.tmp
+*.bak
+*.autosave
+
+# OS が作るファイル
+Thumbs.db
+desktop.ini
+.DS_Store

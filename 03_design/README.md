@@ -11,4 +11,4 @@
 
 - ファイル名の例：`characters/<name>/<name>_front_v01.png`
 - 版を上げるときは `_v02` のように番号を上げ、古い版は消さずに残す
-- 画像や作業ファイルは Git LFS で管理する（README.md の「アニメーションの成果物」を参照）
+- Git で管理するのは png / jpg / svg / pdf だけ。psd や clip などの作業ファイルは管理外なので、資料として残す版を png や pdf に書き出して置く（README.md の「ファイルの管理方法」を参照）

@@ -2,7 +2,7 @@
 
 - 日付：2026-09-28
 - ブランチ：setup/directory-structure
-- 状態：未解決（ユーザーによるログイン待ち）
+- 状態：解決済み
 
 ## 何が起きたか
 
@@ -20,7 +20,7 @@ GitHub CLI（`gh`）がどの GitHub アカウントにもログインしてい�
 ## 対処
 
 - PR はブラウザから作成してもらう：https://github.com/ko-ichimo-ri/Singurality_anime/pull/new/setup/directory-structure
-- 恒久的には、ユーザーがターミナルで `gh auth login` を実行する（ブラウザでの認証が必要なため、エージェントからは行えない）
+- エージェントが `gh auth login --web` をバックグラウンドで実行し、表示されたワンタイムコードをユーザーに伝えた。ユーザーが https://github.com/login/device でコードを入力して承認し、ログインできた（ユーザーのパスワードやトークンはエージェントに渡っていない）
 
 ## 再発防止
 

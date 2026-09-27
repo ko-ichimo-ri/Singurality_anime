@@ -1,0 +1,10 @@
+# 比較用の動画（3×3）に並べる版。{lang} は ja / en に置きかわる。
+# 左上から右へ順に並ぶ。9マス目には説明を入れる。
+- {label: "00 元のパイロット版 / Original", path: "pilot/renders/{lang}/pilot_{lang}.mp4"}
+- {label: "01 水彩 / Watercolor", path: "experiments/01_watercolor/renders/{lang}/01_watercolor_{lang}.mp4"}
+- {label: "02 漫画 / Manga", path: "experiments/02_manga/renders/{lang}/02_manga_{lang}.mp4"}
+- {label: "03 影絵 / Silhouette", path: "experiments/03_silhouette/renders/{lang}/03_silhouette_{lang}.mp4"}
+- {label: "04 紙芝居 / Kamishibai", path: "experiments/04_kamishibai/renders/{lang}/04_kamishibai_{lang}.mp4"}
+- {label: "05 声付き / Voice", path: "experiments/05_voice/renders/{lang}/05_voice_{lang}.mp4"}
+- {label: "06 Blender トゥーン / Toon", path: "experiments/06_blender_toon/renders/{lang}/06_blender_toon_{lang}.mp4"}
+- {label: "07 Blender ジオラマ / Diorama", path: "experiments/07_blender_diorama/renders/{lang}/07_blender_diorama_{lang}.mp4"}

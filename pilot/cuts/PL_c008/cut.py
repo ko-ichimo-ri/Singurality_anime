@@ -40,10 +40,10 @@ def draw(ctx, t, env):
         s = 110
         hold = (x + 6, GROUND - 0.67 * s)
         android.side(ctx, x + 14, GROUND, s * android.HEIGHT, walk=t * 0.95, walk_amt=0.8,
-                     tint=loc.NIGHT, t=t)
+                     tint=env.char_tint(loc.NIGHT), t=t)
         ossan.side(ctx, x - 12, GROUND, s, walk=t * 0.82, walk_amt=0.8, arm="hold", target=hold,
-                   tint=loc.NIGHT)
-        umbrella.draw(ctx, *hold, 0.40 * s, angle=0.08, tint=("#1a2445", 0.05), t=t, shine=0.5)
+                   tint=env.char_tint(loc.NIGHT))
+        umbrella.draw(ctx, *hold, 0.40 * s, angle=0.08, tint=env.prop_tint(("#1a2445", 0.05)), t=t, shine=0.5)
         glow(ctx, x, GROUND - 0.9 * s, 60, umbrella.C["canopy"], 0.10)
         reflection(ctx, x, GROUND + 4, 40, 90, umbrella.C["canopy"], 0.2, wobble=4, t=t)
 

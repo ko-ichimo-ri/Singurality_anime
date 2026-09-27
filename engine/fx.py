@@ -193,10 +193,12 @@ class Finish:
         rng = np.random.default_rng(seed)
         self.w, self.h = w, h
         # 粒子は数枚を用意して順に使う（毎フレーム作ると遅い）
-        self.tiles = [rng.normal(0, grain, (h, w, 1)).astype(np.int16) for _ in range(4)]
+        self.tiles = [rng.normal(0, grain, (h, w, 1)).astype(np.int16) for _ in range(4)] if grain > 0 else []
         self.vignette = vignette
 
     def apply(self, surface, frame):
+        if self.vignette <= 0 and not self.tiles:
+            return
         ctx = cairo.Context(surface)
         sw, sh = surface.get_width(), surface.get_height()
         g = cairo.RadialGradient(sw / 2, sh / 2, sh * 0.35, sw / 2, sh / 2, sh * 0.95)
@@ -205,7 +207,9 @@ class Finish:
         ctx.set_source(g)
         ctx.paint()
         surface.flush()
-        buf = np.ndarray((sh, sw, 4), np.uint8, surface.get_data())
+        if not self.tiles:
+            return
+        buf = np.ndarray((sh, surface.get_stride() // 4, 4), np.uint8, surface.get_data())[:, :sw]
         tile = self.tiles[frame % len(self.tiles)]
         if tile.shape[0] != sh or tile.shape[1] != sw:
             tile = tile[:sh, :sw]

@@ -72,10 +72,10 @@ def draw(ctx, t, env):
 
     hold = (mid - 5, feet - 0.76 * s_o)
     android.back(ctx, axx, feet, s_a, walk=ph_a, walk_amt=0.85, lean=-0.07 * lean,
-                 head_tilt=-0.16 * lean, tint=loc.NIGHT, t=t)
-    ossan.back(ctx, ox, feet, s_o, walk=ph_o, walk_amt=0.85, hold=hold, tint=loc.NIGHT,
+                 head_tilt=-0.16 * lean, tint=env.char_tint(loc.NIGHT), t=t)
+    ossan.back(ctx, ox, feet, s_o, walk=ph_o, walk_amt=0.85, hold=hold, tint=env.char_tint(loc.NIGHT),
                head_tilt=0.04 * lean)
-    umbrella.draw(ctx, *hold, 0.40 * s_o, angle=0.10 - 0.03 * lean, tint=("#1a2445", 0.12), t=t)
+    umbrella.draw(ctx, *hold, 0.40 * s_o, angle=0.10 - 0.03 * lean, tint=env.prop_tint(("#1a2445", 0.12)), t=t)
 
     # 足もとの水はね（足が地面に着くたび）
     for x0, ph, sc in ((ox, ph_o, 1.0), (axx, ph_a, 0.85)):

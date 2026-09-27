@@ -68,9 +68,9 @@ def draw(ctx, t, env):
 
     lift = -46 * ease_in_out(seg(t, 3.2, 4.5))
     anchor_y = 830 + lift
-    tint_a = ("#2b2f52", 0.10)
-    tint_o = ("#c9b9a0", 0.06)
-    umbrella.draw(ctx, SHAFT_X, anchor_y, 1020, under=1.0, shine=0.4, tint=("#2b2f52", 0.15), t=t)
+    tint_a = env.char_tint(("#2b2f52", 0.10))
+    tint_o = env.char_tint(("#c9b9a0", 0.06))
+    umbrella.draw(ctx, SHAFT_X, anchor_y, 1020, under=1.0, shine=0.4, tint=env.prop_tint(("#2b2f52", 0.15)), t=t)
 
     # アンドロイドの腕（右下から）
     release = ease_in_out(seg(t, 2.3, 3.4))

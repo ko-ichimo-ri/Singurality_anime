@@ -40,8 +40,8 @@ def draw(ctx, t, env):
         # 出口の外で待つアンドロイド（まだ小さい）
         s = 170 * android.HEIGHT
         ax, ay = 1415, GROUND + 6
-        pts = android.front(ctx, ax, ay, s, hold=(ax - 0.06 * s, ay - 0.70 * s), tint=loc.NIGHT, t=t)
-        umbrella.draw(ctx, *pts["hand_r"], 0.52 * s, angle=0.04, tint=loc.NIGHT, t=t)
+        pts = android.front(ctx, ax, ay, s, hold=(ax - 0.06 * s, ay - 0.70 * s), tint=env.char_tint(loc.NIGHT), t=t)
+        umbrella.draw(ctx, *pts["hand_r"], 0.52 * s, angle=0.04, tint=env.prop_tint(loc.NIGHT), t=t)
         reflection(ctx, ax, ay + 4, 70, 110, umbrella.C["canopy"], 0.18, wobble=6, t=t)
 
         RIPPLES.draw(ctx, t)

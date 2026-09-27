@@ -77,7 +77,7 @@ def draw(ctx, hx, hy, r, angle=0.0, tint=None, t=0.0, shine=1.0, under=0.0):
     src(ctx, C["canopy"], 1, tint)
     ctx.fill_preserve()
     ctx.set_source(linear(-r, -L, r, rim_y, [(0, C["canopy_lt"], 0.9), (0.45, C["canopy_lt"], 0.0),
-                                             (0.75, C["canopy_dk"], 0.35), (1, C["canopy_dk"], 0.9)]))
+                                             (0.75, C["canopy_dk"], 0.35), (1, C["canopy_dk"], 0.9)], tint=tint))
     ctx.fill()
     # 骨
     src(ctx, C["canopy_dk"], 0.55, tint)

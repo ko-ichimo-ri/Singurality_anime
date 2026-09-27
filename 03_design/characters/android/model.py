@@ -63,7 +63,7 @@ def _coat_side(ctx, sway, tint):
     ctx.close_path()
     src(ctx, C["coat"], 1, tint)
     ctx.fill_preserve()
-    ctx.set_source(linear(-0.12, 0, 0.11, 0, [(0, C["coat_dk"], 0.9), (0.5, C["coat_dk"], 0.0), (1, C["coat_dk"], 0.15)]))
+    ctx.set_source(linear(-0.12, 0, 0.11, 0, [(0, C["coat_dk"], 0.9), (0.5, C["coat_dk"], 0.0), (1, C["coat_dk"], 0.15)], tint=tint))
     ctx.fill()
     # 腰のベルト
     src(ctx, C["coat_dk"], 1, tint)
@@ -127,7 +127,13 @@ def _head_side(ctx, tint, blink, smile):
     ctx.stroke()
 
 
+def _light_tint(tint):
+    """光の線は、影絵のように全身を塗りつぶす作風でも、影に染まらずに光る。"""
+    return None if tint is not None and tint[1] >= 1.0 else tint
+
+
 def _neck_light(ctx, x0, y0, x1, y1, tint, t=0.0):
+    tint = _light_tint(tint)
     a = 0.55 + 0.25 * math.sin(t * 2.1)
     src(ctx, C["light"], a, tint)
     ctx.set_line_width(0.0035)
@@ -228,7 +234,7 @@ def back(ctx, x, y, s, walk=None, walk_amt=1.0, lean=0.0, head_tilt=0.0, hold=No
         src(ctx, C["coat"], 1, tint)
         ctx.fill_preserve()
         ctx.set_source(linear(-0.13, 0, 0.13, 0, [(0, C["coat_dk"], 0.8), (0.35, C["coat_dk"], 0.0),
-                                                   (0.7, C["coat_dk"], 0.0), (1, C["coat_dk"], 0.6)]))
+                                                   (0.7, C["coat_dk"], 0.0), (1, C["coat_dk"], 0.6)], tint=tint))
         ctx.fill()
         src(ctx, C["coat_dk"], 1, tint)
         rrect(ctx, -0.060, -0.605, 0.120, 0.016, 0.006)
@@ -317,7 +323,7 @@ def front(ctx, x, y, s, hold=None, wave=0.0, blink=0.0, smile=0.35, look=0.0, he
         src(ctx, C["coat"], 1, tint)
         ctx.fill_preserve()
         ctx.set_source(linear(-0.13, 0, 0.13, 0, [(0, C["coat_dk"], 0.5), (0.3, C["coat_dk"], 0.0),
-                                                   (0.8, C["coat_dk"], 0.0), (1, C["coat_dk"], 0.5)]))
+                                                   (0.8, C["coat_dk"], 0.0), (1, C["coat_dk"], 0.5)], tint=tint))
         ctx.fill()
         src(ctx, C["coat_lt"], 1, tint)
         for sgn in (-1, 1):
@@ -403,7 +409,7 @@ def front(ctx, x, y, s, hold=None, wave=0.0, blink=0.0, smile=0.35, look=0.0, he
             ellipse(ctx, ex, ey, 0.0095, 0.0125 * open_)
             ctx.fill()
             if open_ > 0.4:
-                src(ctx, C["light"], 0.85, tint)
+                src(ctx, C["light"], 0.85, _light_tint(tint))
                 ctx.set_line_width(0.0022)
                 ctx.arc(ex, ey + 0.002, 0.0055, 0.3, math.pi - 0.3)
                 ctx.stroke()

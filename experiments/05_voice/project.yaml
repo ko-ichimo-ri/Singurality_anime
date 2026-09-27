@@ -1,0 +1,4 @@
+# パイロット版に声を付けて書き出す
+inherit: pilot
+voice: true
+variant: ""

@@ -47,9 +47,9 @@ def draw(ctx, t, env):
     ctx.fill()
 
     hold = (cx + 4 * scale, feet_y - 0.74 * s_o)
-    android.back(ctx, axx, feet_y, s_a, walk=t * 0.95 + 0.3, walk_amt=0.9, tint=loc.NIGHT, t=t)
-    ossan.back(ctx, ox, feet_y, s_o, walk=t * 0.82, walk_amt=0.9, hold=hold, tint=loc.NIGHT)
-    umbrella.draw(ctx, *hold, 0.36 * s_o, angle=0.12, tint=("#1a2445", 0.12), t=t)
+    android.back(ctx, axx, feet_y, s_a, walk=t * 0.95 + 0.3, walk_amt=0.9, tint=env.char_tint(loc.NIGHT), t=t)
+    ossan.back(ctx, ox, feet_y, s_o, walk=t * 0.82, walk_amt=0.9, hold=hold, tint=env.char_tint(loc.NIGHT))
+    umbrella.draw(ctx, *hold, 0.36 * s_o, angle=0.12, tint=env.prop_tint(("#1a2445", 0.12)), t=t)
 
     RAIN_MID.draw(ctx, t, light=light)
     RAIN_NEAR.draw(ctx, t)

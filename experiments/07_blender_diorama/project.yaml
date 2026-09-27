@@ -1,0 +1,5 @@
+# Blender 版（ジオラマ・人形劇風）：experiments/blender/build.py --variant diorama で書き出したフレームに、字幕と音を重ねる
+inherit: pilot
+variant: ""
+frames: renders/frames
+fade_in: 1.6

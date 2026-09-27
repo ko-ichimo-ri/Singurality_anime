@@ -78,11 +78,11 @@ def draw(ctx, t, env):
 
     look_up = smooth(seg(t, 1.8, 2.8))
     ossan.side(ctx, ox, GROUND, s_o, hunch=lerp(0.06, 0.02, look_up), head=lerp(0.12, -0.28, look_up),
-               blink=1.0 if 3.3 < t < 3.42 else 0.0, tint=("#c9b9a0", 0.08))
+               blink=1.0 if 3.3 < t < 3.42 else 0.0, tint=env.char_tint(("#c9b9a0", 0.08)))
     pts = android.side(ctx, axx, GROUND, s_a, walk=t * 1.1, walk_amt=go, tiptoe=tip, flip=True,
                        head=lerp(0.0, -0.30, raise_), arm="hold", target=(hx, hy), smile=0.5,
-                       lean=-0.05 * tip, tint=("#2b2f52", 0.12 * (1 - raise_)), t=t)
-    u = umbrella.draw(ctx, *pts["hand"], 0.46 * s_o, angle=ang, t=t)
+                       lean=-0.05 * tip, tint=env.char_tint(("#2b2f52", 0.12 * (1 - raise_))), t=t)
+    u = umbrella.draw(ctx, *pts["hand"], 0.46 * s_o, angle=ang, t=t, tint=env.prop_tint(None))
 
     # ひさし
     ctx.set_source(linear(0, 0, 0, 50, [(0, "#0b0e18", 1), (1, "#151a28", 1)]))

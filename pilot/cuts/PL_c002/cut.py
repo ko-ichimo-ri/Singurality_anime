@@ -60,7 +60,7 @@ def draw(ctx, t, env):
     ellipse(ctx, x + 10, FLOOR + 4, 120, 14)
     ctx.fill()
     ossan.side(ctx, x, FLOOR, s, walk=phase, walk_amt=go, hunch=lerp(0.09, 0.05, seg(t, 3.2, 4.1)),
-               head=head, blink=blink, tint=("#c7b8a0", 0.06))
+               head=head, blink=blink, tint=env.char_tint(("#c7b8a0", 0.06)))
 
     # 手前を横切る柱（奥行きを出す）
     px = 180 - scroll * 1.8
